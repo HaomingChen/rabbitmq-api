@@ -18,7 +18,7 @@ public class Consumer {
 
         //通过connection创建一个channel
         Channel channel = connection.createChannel();
-//
+//cs
         //声明(创建)一个队列       队列名称   是否持久化  是否独占该队列   是否自动绑定   扩展参数
         String queueName = "test001";
         channel.queueDeclare(queueName, true, false, false, null);
