@@ -4,7 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class Producer {
+public class RabbitMqProducer {
     public static void main(String[] args) throws Exception {
 
         //创建一个ConnectionFactory 并进行配置
