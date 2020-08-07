@@ -4,28 +4,27 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 public class RabbitMqProducer {
-    public static void main(String[] args) throws Exception {
 
-        //创建一个ConnectionFactory 并进行配置
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("192.168.11.76");
-        connectionFactory.setPort(5672);
-        connectionFactory.setVirtualHost("/");
-        //通过连接工厂创建连接
-        Connection connection = connectionFactory.newConnection();
+    private final static String QUEUE_NAME = "HELLO";
 
-        //通过connection创建一个channel
+    public static void main(String[] args) throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        factory.setPort(5672);
+        factory.setUsername("guest");
+        factory.setPassword("guest");
+        Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-
-        //通过channel发送数据
-        String msg = "Hello RabbitMQ!";
-        for(int i = 0; i < 5; i++) {
-            channel.basicPublish("", "test001", null, msg.getBytes());
-        }
-        //记得要关闭相关的链接
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        String message = "Hello World";
+        channel.basicPublish("",QUEUE_NAME, null, message.getBytes());
+        System.out.println("[x] Sent '" + message + "'");
         channel.close();
         connection.close();
-
     }
+
 }
