@@ -20,7 +20,7 @@ public class RabbitMqProducer {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
         channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        String message = "Hello World";
+        String message = "Rabbit is very cute animal.";
         channel.basicPublish("",QUEUE_NAME, null, message.getBytes());
         System.out.println("[x] Sent '" + message + "'");
         channel.close();

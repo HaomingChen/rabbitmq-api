@@ -42,6 +42,10 @@
             <artifactId>amqp-client</artifactId>
             <version>5.7.3</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
 
     </dependencies>
 

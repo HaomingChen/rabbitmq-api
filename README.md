@@ -29,6 +29,8 @@ rabbitmqctl rename_cluster_node oldnode1 newnode1 [oldnode2][newnode2...] （修
 交换机: exchange
 amq.fanout -> 广播交换机
 amq.direct -> 直连交换机
+type: 连接方式
+features: D -> Disk -> 存在磁盘
 
 Config file: rabbitmq 配置文件所在地
 Database directory: 数据存在哪
