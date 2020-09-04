@@ -30,7 +30,7 @@ public class Consumer {
         //创建通道
         Channel channel = connection.createChannel();
         //通道绑定对象
-        channel.queueDeclare("hello", false, false, false, null);
+        channel.queueDeclare("hello", true, false, false, null);
         //消费消息
         //参数1: 消费那个队列的消息 队列名称
         //参数2: 开始消息的自动确认机制

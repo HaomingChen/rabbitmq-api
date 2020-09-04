@@ -34,3 +34,13 @@ features: D -> Disk -> 存在磁盘
 
 Config file: rabbitmq 配置文件所在地
 Database directory: 数据存在哪
+
+rabbitmq默认分发消息的模式 -> 轮询
+
+通过设置消费者basicQos = 1且设置消费者自动应答消息参数为0 -> 手动应答, 手动发送ack 
+可让消息处理快的消费者处理更多的消息(手动ack, 消费者一次处理一条消息), 
+且没有被应答的消息会保存在队列中(消费者一次处理一条消息)
+
+直连 -> consumer根据消息做相同的业务逻辑
+fanout -> consumer根据消息做不同的业务逻辑
+routing -> 加了筛选条件的fanout(routing key) -> 降低访问流量
