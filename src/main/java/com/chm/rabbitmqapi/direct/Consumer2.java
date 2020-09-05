@@ -9,7 +9,7 @@ import java.io.IOException;
  * @author Haoming Chen
  * @date 2020/9/3 17:06
  */
-public class Consumer1 {
+public class Consumer2 {
 
     public static void main(String[] args) throws IOException {
 
@@ -21,7 +21,9 @@ public class Consumer1 {
         //创建一个临时队列
         String queue = channel.queueDeclare().getQueue();
         //基于routing key绑定队列和交换机
+        channel.queueBind(queue, exchangeName, "error");
         channel.queueBind(queue, exchangeName, "info");
+        channel.queueBind(queue, exchangeName, "warning");
         //获取消费的消息
         channel.basicConsume(queue, true, new DefaultConsumer(channel){
             @Override

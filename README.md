@@ -44,3 +44,6 @@ rabbitmq默认分发消息的模式 -> 轮询
 直连 -> consumer根据消息做相同的业务逻辑
 fanout -> consumer根据消息做不同的业务逻辑
 routing -> 加了筛选条件的fanout(routing key) -> 降低访问流量
+topic -> 增加了通配符的操作 
+\#(匹配0个或多个单词) -> .x.x.x.x.x.x无限多个
+*(匹配有且仅有一个单词) -> .x
