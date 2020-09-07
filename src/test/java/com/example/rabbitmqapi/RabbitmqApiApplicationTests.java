@@ -16,6 +16,12 @@ class RabbitmqApiApplicationTests {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    //topic 动态路由, 订阅模式
+    @Test
+    public void testTopic() {
+        rabbitTemplate.convertAndSend("topics", "product.route.add", "user.save 路由消息");
+    }
+
     @Test
     public void testRoute() {
         rabbitTemplate.convertAndSend("directs", "info", "发送info的key的路由信息");
