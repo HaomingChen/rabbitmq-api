@@ -51,7 +51,33 @@ topic -> 增加了通配符的操作
 队列与交换机的创建主要与消费者有关, 没有消费者进行消费, 
 仅生产者发送消息交换机不会被创建
 
+可靠消息: 
+第一步: 消息到交换机
 消息的可靠性投递
 两种模式
 confirm模式
+如果消息到达了exchange -> confirmCallback回调, ack=false
+如果消息没有到达exchange -> confirmCallback回调, ack=true
+在confirm方法进行回调
+
+第二步: 交换机到队列
 return模式
+exchange到queue成功,则不回调ReturnCallback
+在returnedMessage方法进行回调
+
+rabbitmq提供事务机制性能较差
+txSelect(), 用于将当前channel设置成transaction模式
+txCommit(), 用于提交事务
+txRollback(), 用于回滚事务
+
+第三步: 队列到消费端
+配置: 
+自动确认: acknowledge = "none"
+消息被consumer接收到, 自动确认收到, 并将相应message从RabbitMQ的消息缓存中移除
+
+手动确认: acknowledge = "manual"
+业务处理成功后, 调用channel.basicAck()手动签收
+若失败channel.basicNack()
+
+根据异常情况确认: acknowledge = "auto" (根据异常类型的不同执行不同的业务逻辑)
+

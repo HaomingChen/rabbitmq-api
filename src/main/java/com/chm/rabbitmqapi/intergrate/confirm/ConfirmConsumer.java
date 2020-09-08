@@ -13,7 +13,8 @@ public class ConfirmConsumer {
     @RabbitListener(bindings = {
             @QueueBinding(
                     value = @Queue(name = "test_queue_confirm"),//不指定名字, 创建临时队列
-                    exchange = @Exchange(value = "logs", type = ExchangeTypes.DIRECT) //绑定的交换机
+                    exchange = @Exchange(value = "test_exchange_confirm", type = ExchangeTypes.DIRECT), //绑定的交换机
+                    key = {"confirm"}
             )
     })
     public void receiver1(String message) {
