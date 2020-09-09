@@ -19,6 +19,15 @@ class RabbitmqApiApplicationTests {
     private RabbitTemplate rabbitTemplate;
 
     /**
+     * 测试手动ack
+     */
+    @Test
+    public void testManualConfirm() {
+        //发送消息
+        rabbitTemplate.convertAndSend("test_manual_ack", "confirm", "message confirm....");
+    }
+
+    /**
      * 确认模式:
      * 1. 确认模式开启: ConnectionFactory中开启publisher-confirms="true"(已废弃) -> publisher-confirm-type: correlated
      * 2. 在rabbitTemplate定义ConfirmCallBack回调函数
