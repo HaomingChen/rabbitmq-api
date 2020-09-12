@@ -81,3 +81,23 @@ txRollback(), 用于回滚事务
 
 根据异常情况确认: acknowledge = "auto" (根据异常类型的不同执行不同的业务逻辑)
 
+basicAck, basicNack方法参数
+1. tag 2. false: 仅拒绝当前tag的消息 true: 拒绝直到当前参数tag参数的所有消息
+3. 重回队列
+void basicNack(long deliveryTag, boolean multiple, boolean requeue)
+            throws IOException;
+
+1. basicReject方法单条处理, 没有multiple参数
+
+消息可靠性总结
+1. 持久化
+    a) exchange要持久化
+    b) queue要持久化
+    c) message要持久化
+2. 生产方确认Confirm(消息到达交换机)
+交换机到队列 -> return callback
+3. 消费方确认Ack
+4. Broker高可用
+
+1. 消费端限流
+业务场景: 秒杀 -> 部分秒杀请求可以直接丢弃

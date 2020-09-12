@@ -1,37 +1,38 @@
 package com.chm.rabbitmqapi.intergrate.acknowledge;
 
 import com.rabbitmq.client.Channel;
-import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Consumer ACK机制
+ * 1. 设置手动签收: acknowledge="manual"
+ * 2. 让监听器类实现ChannelAwareMessageListener接口
+ * 3. 如果消息成功处理， 则调用channel的basicAck()签收
+ * 4. 如果消息处理失败, 则调用channel的basicNack()拒绝签收, broker重新发送欸consumer
+ */
 @Component
-public class AckListener {
+public class AckListener implements ChannelAwareMessageListener {
 
-    @RabbitListener(bindings = {
-            @QueueBinding(
-                    value = @Queue(name = "test_manual_ack"),//不指定名字, 创建临时队列
-                    exchange = @Exchange(value = "test_manual_ack", type = ExchangeTypes.TOPIC), //绑定的交换机
-                    key = {"confirm"}
-            ),
+    @Override
+    public void onMessage(Message message, Channel channel) throws IOException {
 
-    }, ackMode = "MANUAL")
-    public void onMessage(String message, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag, Channel channel) throws IOException {
-        System.out.println("consumerDoAck: " + message);
-        if (message.contains("message")) {
-            // RabbitMQ的ack机制中，第二个参数返回true，表示需要将这条消息投递给其他的消费者重新消费
-            channel.basicAck(deliveryTag, false);
-        } else {
-            // 第三个参数true，表示这个消息会重新进入队列
-            channel.basicNack(deliveryTag, false, true);
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+        //1. 接收转换消息
+        System.out.println(new String(message.getBody()));
+        //2. 处理业务逻辑
+        System.out.println("处理业务逻辑...");
+        //3. 手动签收
+        try {
+            channel.basicAck(deliveryTag, true);
+        } catch (IOException e) {
+            //4. 拒绝签收
+            channel.basicNack(deliveryTag, true, true);
         }
+
     }
 
 }
