@@ -19,6 +19,17 @@ class RabbitmqApiApplicationTests {
     private RabbitTemplate rabbitTemplate;
 
     /**
+     * 消费端限流
+     */
+    @Test
+    public void prefetchMessage() {
+        //发送消息
+        for (int i = 0; i < 20; i++) {
+            rabbitTemplate.convertAndSend("test_prefetch_message", "qos", "message sent....");
+        }
+    }
+
+    /**
      * 测试手动ack
      */
     @Test

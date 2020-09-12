@@ -17,14 +17,17 @@ public class QosListenerDemo {
 
     @RabbitListener(bindings = {
             @QueueBinding(
-                    value = @Queue(name = "test_qos_listener"),//不指定名字, 创建临时队列
-                    exchange = @Exchange(value = "test_qos_listener", type = ExchangeTypes.TOPIC), //绑定的交换机
+                    value = @Queue(name = "test_prefetch_message"),//不指定名字, 创建临时队列
+                    exchange = @Exchange(value = "test_prefetch_message", type = ExchangeTypes.TOPIC), //绑定的交换机
                     key = {"qos"}
             ),
-
     }, ackMode = "MANUAL")
-    public void onMessage(String message, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag, Channel channel) throws IOException {
-
+    public void onMessage(String message, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag, Channel channel) throws IOException, InterruptedException {
+        //也可以通过配置spring.rabbitmq.listener.simple.prefetch这个配置来配置消费端监听的最大个数
+        //获取消息
+        channel.basicQos(1);
+        System.out.println("prefetch message: " + message);
+        channel.basicAck(deliveryTag, true);
     }
 
 }
