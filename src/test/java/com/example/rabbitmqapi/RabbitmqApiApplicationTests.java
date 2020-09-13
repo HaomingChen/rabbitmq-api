@@ -3,7 +3,9 @@ package com.example.rabbitmqapi;
 import com.chm.rabbitmqapi.Application;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.Correlation;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,30 @@ class RabbitmqApiApplicationTests {
     //注入rabbit template
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    /**
+     * TTL:过期时间
+     * 1. 队列统一过期
+     * -> 为队列中的消息配置同意过期
+     * 2. 消息单独过期
+     */
+    @Test
+    public void testTtl() {
+        //消息的后处理对象, 设置一些消息的参数信息
+        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message) {
+                //1. 设置message的信息 -> 设置消息的过期时间
+                message.getMessageProperties().setExpiration("1000");
+                //2. 返回该消息
+                return message;
+            }
+        };
+        //MessagePostProcessor -> 可设置单个消息过期时间
+        for (int i = 0; i < 10; i++) {
+            rabbitTemplate.convertAndSend("test_exchange_ttl", "ttl", "message sent....", messagePostProcessor);
+        }
+    }
 
     /**
      * 消费端限流
